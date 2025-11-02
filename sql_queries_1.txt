@@ -1,0 +1,104 @@
+﻿1. Таблиця DEPARTMENTS.
+Застосовуючи оператор CASE напишіть скрипт, який буде виводити список назв департаментів та нове поле “State”, яке буде заповнюватися в залежності від того, яке значення має поле LOCATION_ID.
+Для LOCATION_ID 1700 нове поле “State” має містити запис “Washington”,
+Для 1400 – “Texas”
+Для 1500 і 2500 – “California”
+Для 1800 – “ Ontario”
+2400 – “Other”
+2700 – “Bavaria”
+        SELECT department_name, location_id,
+               CASE
+           WHEN location_id = 1700 THEN 'Washington'
+           WHEN location_id = 1400 THEN 'Texas'
+           WHEN location_id IN (1500, 2500) THEN 'California'
+           WHEN location_id = 1800 THEN 'Ontario'
+           WHEN location_id = 2400 THEN 'Other'
+           WHEN location_id = 2700 THEN 'Bavaria'
+END AS state FROM departments;[a]
+
+
+2. Таблиця LOCATIONS.
+Напишіть запит для відображення інформації про кількість локацій компанії у кожному COUNTRY_ID та відсортуйте список від країни із найбільшою кількістю локацій компанії.
+        SELECT country_id, COUNT(location_id) FROM locations
+GROUP BY country_id
+ORDER BY COUNT(location_id) DESC;
+
+
+3. Таблиця LOCATIONS.
+Напишіть запит для відображення інформації про кількість локацій компанії у кожному COUNTRY_ID, вивівши інформацію тільки по країнам, де кількість локацій більше двох.
+        SELECT country_id, COUNT(location_id) FROM locations
+GROUP BY country_id
+        HAVING COUNT(location_id) > 2;
+
+
+4. Таблиці LOCATIONS та COUNTRIES.
+Напишіть запит для відображення всіх значень полів STREET_ADDRESS, STATE_PROVINCE та COUNTRY_NAME та відсортуйте за алфавітом (від A до Z) назву країн.
+        SELECT hr.locations.street_address, hr.locations.state_province, hr.countries.country_name FROM hr.locations
+FULL JOIN hr.countries
+ON hr.locations.country_id = hr.countries.country_id
+ORDER BY hr.countries.country_name ASC;
+
+
+5. Таблиці LOCATIONS та COUNTRIES.
+Напишіть запит для розрахунку кількості STREET_ADDRESS за кожною із COUNTRY_NAME, які мають відповідні значення в обох таблицях. Виведіть всі показники.
+        SELECT hr.countries.country_name, COUNT(hr.locations.street_address) FROM hr.locations
+JOIN hr.countries
+ON hr.locations.country_id = hr.countries.country_id
+GROUP BY hr.countries.country_name;
+
+
+6. Таблиці LOCATIONS, COUNTRIES, REGIONS.
+Напишіть запит для відображення всіх значень полів[b], STATE_PROVINCE та COUNTRY_NAME, REGION_NAME.
+        SELECT hr.locations.state_province, hr.countries.country_name, hr.regions.region_name FROM hr.locations
+JOIN hr.countries
+    ON hr.locations.country_id = hr.countries.country_id
+JOIN hr.regions
+    ON hr.countries.region_id = hr.regions.region_id;
+
+
+7. Таблиці LOCATIONS, COUNTRIES, REGIONS.
+Напишіть запит для розрахунку кількості STREET_ADDRESS кількості COUNTRY_NAME для кожного REGION_NAME, які мають відповідні значення в усіх трьох таблицях. Виведіть всі показники.
+        SELECT hr.regions.region_name,
+    COUNT(hr.countries.country_name),
+    COUNT(hr.locations.street_address) FROM hr.locations
+JOIN hr.countries
+            ON hr.locations.country_id = hr.countries.country_id
+JOIN hr.regions
+            ON hr.countries.region_id = hr.regions.region_id
+GROUP BY hr.regions.region_name;
+
+
+8. Таблиці LOCATIONS, COUNTRIES, REGIONS.
+Напишіть запит для розрахунку кількості STREET_ADDRESS, кількості COUNTRY_NAME для кожного REGION_NAME, які мають відповідні значення в усіх трьох таблицях. Виведіть усі показники. Напишіть скрипт використовуючи аліаси для назв таблиць.
+        SELECT r.region_name,
+    COUNT(c.country_name),
+    COUNT(hr.l.street_address) FROM hr.locations l
+JOIN hr.countries c
+            ON l.country_id = c.country_id
+JOIN hr.regions
+            ON c.region_id = r.region_id
+GROUP BY r.region_name;
+
+
+9. Таблиці LOCATIONS, COUNTRIES, REGIONS.
+Напишіть запит для розрахунку кількості STREET_ADDRESS кількості COUNTRY_NAME для кожного REGION_NAME, які мають відповідні значення в усіх трьох таблицях. Та виведіть ті REGION_NAME, де кількість COUNTRY_NAME буде більше 6.
+        SELECT regions.region_name,
+    COUNT(locations.street_address),
+    COUNT(countries.country_name)
+FROM regions
+JOIN countries ON regions.region_id = countries.region_id
+JOIN locations ON countries.country_id = locations .country_id
+GROUP BY regions.region_name
+HAVING COUNT(countries.country_name) > 6;
+
+
+10. Таблиці LOCATIONS, COUNTRIES, REGIONS.
+Напишіть запит для розрахунку кількості STREET_ADDRESS кількості COUNTRY_NAME для кожного REGION_NAME, які мають відповідні значення в усіх трьох таблицях. Та виведіть ті REGION_NAME, де кількість COUNTRY_NAME буде більше 6. Виведіть всі показники. Напишіть скрипт використовуючи аліаси для назв полів.
+        SELECT r.region_name,
+            COUNT(l.street_address),
+            COUNT(c.country_name)
+FROM regions r
+JOIN countries c ON r.region_id = c.region_id
+JOIN locations l ON c.country_id = l.country_id
+GROUP BY r.region_name
+HAVING COUNT(c.country_name) > 6;
