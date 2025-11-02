@@ -1,0 +1,104 @@
+﻿1. Таблиці JOB_HISTORY, EMPLOYEES
+Оператор UNION
+Напишіть запит в якому будуть відображатися поля ідентифікатор співробітника, дата найму та дата звільнення. Якщо співробітник досі працює в компанії дата звільнення має бути null.
+SELECT employee_id, hire_date, null AS end_date
+FROM EMPLOYEES
+UNION
+SELECT employee_id, end_date, start_date AS hire_date
+FROM JOB_HISTORY;
+
+
+2. Таблиці JOB_HISTORY, EMPLOYEES
+Оператор UNION
+Напишіть запит в якому буде відображатися статус співробітника (status) із варіантами заповнення current_employees – якщо співробітник досі працює в компанії і fired_emloyees – якщо співробітник звільнився та кількість співробітників за кожним із цих статусів.
+SELECT 'current_employees' AS status, COUNT(*) AS total
+FROM employees
+UNION
+SELECT 'fired_employees' AS status, COUNT(*) AS total
+FROM job_history;
+
+
+3. Таблиці JOB_HISTORY, EMPLOYEES
+Оператор UNION
+Напишіть запит в якому буде відображатися статус співробітника (status) із варіантами заповнення current_employees – якщо співробітник досі працює в компанії і fired_emloyees – якщо співробітник звільнився та кількість співробітників за кожним із цих статусів групуючи ці показники за ідентифікатором посади.
+SELECT job_id, 'current_employees' AS status, COUNT(*) AS total
+FROM employees
+GROUP BY job_id
+UNION
+SELECT job_id, 'fired_employees' AS status, COUNT(*) AS total
+FROM job_history
+GROUP BY job_id;
+
+
+4. Таблиці JOB_HISTORY, EMPLOYEES.
+SUBQUERY
+Напишіть запит в якому буде відображатися за зменшенням кількість співробітників за кожним департаментом, лише серед тих департаментів, де було звільнено більше 1 співробітника.
+SELECT department_id,
+COUNT(employee_id) AS employee_count
+FROM hr.employees
+WHERE department_id IN 
+        (SELECT department_id
+           FROM hr.job_history
+           GROUP BY department_id
+            HAVING COUNT(employee_id) > 1)
+GROUP BY department_id
+ORDER BY employee_count DESC;
+
+
+5. Таблиці JOB_HISTORY, EMPLOYEES.
+SUBQUERY
+Напишіть запит в якому буде відображатися ідентифікатори співробітників, імена, прізвища тільки із тих департаментів, де є співробітники, які працювали менше року)
+SELECT employee_id, first_name, last_name
+FROM hr.employees
+WHERE department_id IN 
+        (SELECT department_id
+ FROM hr.job_history
+ WHERE MONTHS_BETWEEN(end_date, start_date) < 12);
+
+
+6. Таблиці JOB_HISTORY, EMPLOYEES.
+SUBQUERY
+Напишіть запит в якому буде відображатися ідентифікатори співробітників, імена, прізвища тільки за умови, якщо в цьому департаменті є співробітники, які пропрацювали більше року
+SELECT employee_id, first_name, last_name
+FROM hr.employees
+WHERE department_id IN 
+        (SELECT department_id
+ FROM hr.job_history
+ WHERE MONTHS_BETWEEN(end_date, start_date) > 12);
+
+
+7. Таблиці JOB_HISTORY, EMPLOYEES.
+SUBQUERY
+Напишіть запит в якому буде відображатися кількість співробітників за кожним із департаментів тільки за умови, якщо в цьому департаменті є співробітники, які пропрацювали більше року. Відсортуйте всі записи за зменшенням кількості співробітників.
+SELECT department_id,
+COUNT(*) AS total_employees
+FROM hr.employees
+WHERE department_id IN 
+        (SELECT department_id
+            FROM hr.job_history
+            WHERE MONTHS_BETWEEN(end_date, start_date) > 12)
+GROUP BY department_id
+ORDER BY total_employees DESC;
+
+
+8. Таблиця EMPLOYEES
+Напишіть скрипт, який має додавати запис у таблицю із вашим іменем і прізвищем. Дата найму завжди має бути сьогоднішнім числом, зп = 25000, департамент = 110, менеджер 205. Інші поля можуть бути заповнені довільно.
+INSERT INTO hr.employees 
+(employee_id, first_name, last_name, email, phone_number, hire_date, job_id, salary, manager_id, department_id)
+VALUES 
+(999, 'Maryna', 'Prytoliuk', 'm.pritolyuk00@gmail.com', '380501234567', SYSDATE, 'IT_PROG', 25000, 205, 110);
+
+
+9. Таблиця EMPLOYEES.
+Напишіть скрипт, який має оновлювати створений вище запис у таблиці із вашим іменем і прізвищем. Змініть у цьому записі департамент на 90, а ЗП на 30000.
+UPDATE hr.employees
+SET department_id = 90, salary = 30000
+WHERE first_name = 'Maryna'
+AND last_name = 'Prytoliuk';
+
+
+10. Таблиця EMPLOYEES
+Напишіть скрипт, який має видаляти створений вами запис у таблиці.
+DELETE FROM hr.employees
+WHERE first_name = 'Maryna'
+AND last_name = 'Prytoliuk';[a]
