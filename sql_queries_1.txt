@@ -31,12 +31,6 @@ GROUP BY country_id
         HAVING COUNT(location_id) > 2;
 
 
-
-
-
-
-
-
 4. Таблиці LOCATIONS та COUNTRIES.
 Напишіть запит для відображення всіх значень полів STREET_ADDRESS, STATE_PROVINCE та COUNTRY_NAME та відсортуйте за алфавітом (від A до Z) назву країн.
         SELECT hr.locations.street_address, hr.locations.state_province, hr.countries.country_name FROM hr.locations
@@ -60,18 +54,6 @@ JOIN hr.countries
     ON hr.locations.country_id = hr.countries.country_id
 JOIN hr.regions
     ON hr.countries.region_id = hr.regions.region_id;
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 7. Таблиці LOCATIONS, COUNTRIES, REGIONS.
@@ -120,9 +102,3 @@ JOIN countries c ON r.region_id = c.region_id
 JOIN locations l ON c.country_id = l.country_id
 GROUP BY r.region_name
 HAVING COUNT(c.country_name) > 6;
-
-
-
-
-[a]Варто додати ELSE 'Unknown' на випадок, якщо location_id не співпадає з жодним із значень.
-[b]чим цей запит відрізняється від 4? чому тут не FULL
